@@ -3,6 +3,7 @@
 
 #include <vector>
 #include "Point.h"
+#import "omp.h"
 
 template <typename T>
 std::vector<Point<T>> init_centers(const std::vector<Point<T>>& points, int groupsNumber)
@@ -18,6 +19,7 @@ bool change_groups(const std::vector<Point<T>>& points, const std::vector<Point<
 {
     bool is_last_iteration = true;
 
+#pragma omp parallel for
     for (int point_number = 0; point_number < points.size(); ++point_number) {
         int min_distance_group = 0;
         T min_distance = points[point_number].get_distance(centers[0]);
@@ -30,10 +32,12 @@ bool change_groups(const std::vector<Point<T>>& points, const std::vector<Point<
             }
         }
 
+#pragma omp critical
         if (groups[point_number] != min_distance_group) {
-            groups[point_number] = min_distance_group;
             is_last_iteration = false;
         }
+
+        groups[point_number] = min_distance_group;
     }
 
     return is_last_iteration;
@@ -42,16 +46,19 @@ bool change_groups(const std::vector<Point<T>>& points, const std::vector<Point<
 template <typename T>
 void change_centers(const std::vector<Point<T>>& points, const std::vector<int>& groups, std::vector<Point<T>>& centers)
 {
+#pragma omp parallel for
     for (int i = 0; i < centers.size(); ++i) {
         centers[i].zeroize();
     }
 
     std::vector<int> center_numbers(centers.size(), 0);
+
     for (int i = 0; i < points.size(); ++i) {
         centers[groups[i]] += points[i];
         center_numbers[groups[i]]++;
     }
 
+#pragma omp parallel for
     for (int j = 0; j < centers.size(); ++j) {
         centers[j] /= center_numbers[j];
     }
