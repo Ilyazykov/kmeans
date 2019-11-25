@@ -9,7 +9,7 @@ if (OPENMP_FOUND)
     set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${OpenMP_CXX_FLAGS}")
     set (CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} ${OpenMP_EXE_LINKER_FLAGS}")
 else()
-    if(APPLE)
+    if(APPLE) # For some reason there are some problems with autodetect openmp on my mac
         include_directories(/System/Volumes/Data/usr/local/Cellar/libomp/9.0.0/include)
         link_directories(/System/Volumes/Data/usr/local/Cellar/libomp/9.0.0/lib)
     endif()
