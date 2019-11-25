@@ -53,9 +53,22 @@ void change_centers(const std::vector<Point<T>>& points, const std::vector<int>&
 
     std::vector<int> center_numbers(centers.size(), 0);
 
-    for (int i = 0; i < points.size(); ++i) {
-        centers[groups[i]] += points[i];
-        center_numbers[groups[i]]++;
+#pragma omp parallel
+    {
+        std::vector<Point<T>> centers_private(centers.size(), Point<T>(centers[0].getDimention()));
+        std::vector<int> center_numbers_private(centers.size(), 0);
+
+    #pragma omp for
+        for (int i = 0; i < points.size(); ++i) {
+            centers_private[groups[i]] += points[i];
+            center_numbers_private[groups[i]]++;
+        }
+
+    #pragma omp critical
+        for (int j = 0; j < centers.size(); ++j) {
+            centers[j] += centers_private[j];
+            center_numbers[j] += center_numbers_private[j];
+        }
     }
 
 #pragma omp parallel for

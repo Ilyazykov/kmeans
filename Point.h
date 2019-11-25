@@ -10,7 +10,7 @@ class Point {
 
 public:
     Point() : coordinates() {}
-    Point(int size) : coordinates(size) {}
+    Point(int size) : coordinates(size, 0) {}
 
     Point(const typename std::vector<T>::const_iterator& begin, const typename std::vector<T>::const_iterator& end) : coordinates(begin, end) {}
     Point(const std::istream_iterator<T>& begin, const std::istream_iterator<T>& end) : coordinates(begin, end) {}
@@ -52,6 +52,11 @@ public:
         for (int i = 0; i < coordinates.size(); ++i) {
             coordinates[i] = 0;
         }
+    }
+
+    int getDimention()
+    {
+        return coordinates.size();
     }
 
     friend Point<T>& operator+=(Point<T>& left, const Point<T>& right)
