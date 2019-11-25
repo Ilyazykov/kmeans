@@ -32,7 +32,7 @@ bool change_groups(const std::vector<Point<T>>& points, const std::vector<Point<
             }
         }
 
-#pragma omp critical
+    #pragma omp critical
         if (groups[point_number] != min_distance_group) {
             is_last_iteration = false;
         }
