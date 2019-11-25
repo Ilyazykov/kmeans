@@ -15,8 +15,6 @@ else()
     endif()
 endif()
 
-
-
 add_executable(kmeans main.cpp Point.h Point.cpp Point.h functions.h functions.cpp kmeans.h kmeans.cpp)
 
 if (OPENMP_FOUND)
